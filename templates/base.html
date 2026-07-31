@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}AI Reputation Manager{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a href="{% url 'home' %}" class="brand">🤖 AI <span class="badge">Reputation Manager</span></a>
+
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+                <span class="nav-user">Hi, {{ user.username }}</span>
+                <a href="{% url 'account_dashboard' %}">Account</a>
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'review_list' %}">Reviews</a>
+                <a href="{% url 'add_review' %}">Add Review</a>
+                <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-ghost btn-sm">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Get Started</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<main>
+    <div class="wrap">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+</main>
+
+<footer class="site-footer">
+    &copy; {% now "Y" %} AI Reputation Manager — Powered by AI ✨
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ business.business_name }} — Reviews{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>🏢 {{ business.business_name }}</h1>
+    <p>{{ business.get_business_type_display }} &middot; {{ business.address }}</p>
+</div>
+
+<div class="card" style="margin-bottom:28px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+        <div>
+            {% if avg_rating %}
+                <div class="stars">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= avg_rating %}★{% else %}☆{% endif %}
+                    {% endfor %}
+                </div>
+                <p class="helptext">{{ avg_rating }} / 5 average &middot; {{ total }} review{{ total|pluralize }}</p>
+            {% else %}
+                <p class="helptext">No reviews yet. Be the first!</p>
+            {% endif %}
+        </div>
+
+        <a href="{% url 'public_add_review' business.slug %}" class="btn btn-primary">⭐ Leave a Review</a>
+    </div>
+</div>
+
+<h2>Customer Reviews</h2>
+
+{% for review in reviews %}
+    <div class="review-card">
+        <div class="stars">
+            {% for i in "12345" %}
+                {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+            {% endfor %}
+        </div>
+        <h3 style="margin-bottom:4px;">{{ review.customer_name }}</h3>
+        <p>{{ review.review_text }}</p>
+
+        {% if review.published_reply %}
+            <div class="ai-box">
+                <strong>💬 Response from {{ business.business_name }}</strong>
+                <p style="margin-bottom:0;">{{ review.published_reply }}</p>
+            </div>
+        {% endif %}
+
+        <small class="helptext">{{ review.created_at }}</small>
+    </div>
+{% empty %}
+    <p class="helptext">No approved reviews to show yet.</p>
+{% endfor %}
+{% endblock %}

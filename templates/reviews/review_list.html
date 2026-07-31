@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Customer Reviews{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>⭐ Customer Reviews</h1>
+    <p>Manage AI-suggested replies for every review.</p>
+</div>
+
+<a href="{% url 'add_review' %}" class="btn btn-primary" style="margin-bottom:24px;">➕ Add New Review</a>
+
+{% for review in reviews %}
+<div class="review-card">
+
+    <div class="stars">
+        {% for i in "12345" %}
+            {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+        {% endfor %}
+    </div>
+
+    <h3>Customer Review</h3>
+    <p>{{ review.review_text }}</p>
+
+    <p>
+        <strong>Sentiment:</strong>
+        {% if review.sentiment == "Positive" %}
+            <span class="tag tag-positive">🟢 Positive</span>
+        {% elif review.sentiment == "Negative" %}
+            <span class="tag tag-negative">🔴 Negative</span>
+        {% else %}
+            <span class="tag tag-neutral">⚪ {{ review.sentiment }}</span>
+        {% endif %}
+    </p>
+
+    {% if review.spam %}
+        <div class="alert alert-error">
+            🚨 <strong>Spam Review</strong>
+            {% if review.spam_reason %}— {{ review.spam_reason }}{% endif %}
+        </div>
+    {% else %}
+        {% if review.ai_reply %}
+            <div class="ai-box">
+                <h3 style="margin-top:0;">🤖 AI Suggested Reply</h3>
+                <p>{{ review.ai_reply }}</p>
+
+                {% if review.approved %}
+                    <span class="tag tag-approved">✅ Reply Approved</span>
+
+                    <div class="ai-box" style="margin-top:14px;">
+                        <h3 style="margin-top:0;">💬 Published Owner Reply</h3>
+                        <p style="margin-bottom:0;">{{ review.published_reply }}</p>
+                    </div>
+                {% else %}
+                    <span class="tag tag-pending">⏳ Waiting for Owner Approval</span>
+
+                    <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+                        <a href="{% url 'edit_reply' review.id %}" class="btn btn-outline btn-sm">✏️ Edit AI Reply</a>
+
+                        <form method="POST" action="{% url 'approve_reply' review.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm">✅ Approve Reply</button>
+                        </form>
+
+                        <form method="POST" action="{% url 'reject_reply' review.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">❌ Reject Reply</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <p class="helptext">⏳ AI reply is not available yet.</p>
+        {% endif %}
+    {% endif %}
+
+</div>
+{% empty %}
+    <h3>No reviews available.</h3>
+{% endfor %}
+{% endblock %}

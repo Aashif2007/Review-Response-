@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Owner Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>📊 Owner Dashboard</h1>
+    <p>Live overview of {{ business.business_name }}'s customer reviews.</p>
+</div>
+
+<div class="card" style="margin-bottom:24px;">
+    <strong>Share your customer review link:</strong>
+    <div class="share-box" style="margin-top:10px;">
+        <code>{{ request.scheme }}://{{ request.get_host }}{% url 'public_add_review' business.slug %}</code>
+        <a href="{% url 'business_public' business.slug %}" class="btn btn-outline btn-sm">🔗 View Public Page</a>
+    </div>
+</div>
+
+<div class="grid stat-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ total_reviews }}</div>
+        <div class="stat-label">Total Reviews</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ spam_count }}</div>
+        <div class="stat-label">🚨 Spam</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ negative_count }}</div>
+        <div class="stat-label">😡 Negative</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ pending_count }}</div>
+        <div class="stat-label">⏳ Pending</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ approved_count }}</div>
+        <div class="stat-label">✅ Approved</div>
+    </div>
+</div>
+
+<h2>Customer Reviews</h2>
+
+{% if reviews %}
+    {% for review in reviews %}
+        <div class="review-card">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+                <h3 style="margin:0;">{{ review.customer_name }}</h3>
+                {% if review.spam %}
+                    <span class="tag tag-spam">🚨 Spam</span>
+                {% elif review.approved %}
+                    <span class="tag tag-approved">✅ Approved</span>
+                {% else %}
+                    <span class="tag tag-pending">⏳ Pending</span>
+                {% endif %}
+            </div>
+
+            <div class="stars">
+                {% for i in "12345" %}
+                    {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                {% endfor %}
+            </div>
+
+            <p><strong>Review:</strong> {{ review.review_text }}</p>
+
+            {% if review.spam %}
+                <div class="alert alert-error">
+                    🚨 <strong>Suspicious Review</strong> — {{ review.spam_reason }}
+                </div>
+            {% else %}
+                {% if review.ai_reply and not review.approved %}
+                    <div class="ai-box">
+                        <h4 style="margin-top:0;">🤖 AI Suggested Reply</h4>
+
+                        <form method="POST" action="{% url 'approve_reply' review.id %}">
+                            {% csrf_token %}
+                            <textarea name="owner_reply" rows="4">{{ review.ai_reply }}</textarea>
+                            <div style="margin-top:10px; display:flex; gap:10px;">
+                                <button type="submit" class="btn btn-success btn-sm">✅ Approve Reply</button>
+                                <a href="{% url 'edit_reply' review.id %}" class="btn btn-outline btn-sm">✏️ Edit</a>
+                            </div>
+                        </form>
+                    </div>
+                {% elif review.approved %}
+                    <div class="ai-box">
+                        <h4 style="margin-top:0;">✅ Approved Reply</h4>
+                        <p style="margin-bottom:0;">{{ review.owner_reply }}</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            <small class="helptext">{{ review.created_at }}</small>
+        </div>
+    {% endfor %}
+{% else %}
+    <p class="helptext">No reviews found yet.</p>
+{% endif %}
+
+<div style="margin-top:24px; display:flex; gap:12px;">
+    <a href="{% url 'add_review' %}" class="btn btn-primary">➕ Add Review</a>
+    <a href="{% url 'review_list' %}" class="btn btn-outline">📋 View Review Page</a>
+</div>
+{% endblock %}

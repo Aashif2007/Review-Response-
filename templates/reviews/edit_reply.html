@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Edit AI Reply{% endblock %}
+
+{% block content %}
+<div class="card form-card" style="max-width:640px;">
+    <h1 style="margin-top:0;">✏️ Edit AI Reply</h1>
+
+    <p><strong>Customer Review:</strong></p>
+    <p class="helptext">{{ review.review_text }}</p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="field">
+            <label>AI Reply</label>
+            <textarea name="ai_reply" rows="8">{{ review.ai_reply }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+    </form>
+
+    <p style="margin-top:16px;">
+        <a href="{% url 'review_list' %}">← Back to Reviews</a>
+    </p>
+</div>
+{% endblock %}

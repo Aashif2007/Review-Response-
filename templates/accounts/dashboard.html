@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}My Account — AI Reputation Manager{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Welcome, {{ request.user.username }} 👋</h1>
+    <p>This is your account home. Manage your business and jump into your admin dashboard from here.</p>
+</div>
+
+<div class="card">
+    {% if has_business %}
+        <h3 style="margin-top:0;">🏢 {{ business.business_name }}</h3>
+        <p class="helptext">Business type: {{ business.get_business_type_display }}</p>
+
+        <p><strong>Share this link with your customers so they can leave a review:</strong></p>
+        <div class="share-box">
+            <code>{{ request.scheme }}://{{ request.get_host }}{% url 'business_public' business.slug %}</code>
+        </div>
+
+        <div style="margin-top:24px; display:flex; gap:12px; flex-wrap:wrap;">
+            <a href="{% url 'dashboard' %}" class="btn btn-primary">📊 Open Admin Dashboard</a>
+            <a href="{% url 'business_public' business.slug %}" class="btn btn-outline">🔗 View Public Page</a>
+        </div>
+    {% else %}
+        <h3 style="margin-top:0;">🏢 Set up your business</h3>
+        <p class="helptext">
+            You haven't registered a business yet. Register one to unlock your
+            AI dashboard and get your own customer review page.
+        </p>
+        <a href="{% url 'register_business' %}" class="btn btn-primary">➕ Register Your Business</a>
+    {% endif %}
+</div>
+{% endblock %}

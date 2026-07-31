@@ -1,0 +1,7 @@
+Business Name: XYZ Restaurant
+
+Restaurant opens at 10:00 AM.
+Restaurant closes at 10:00 PM.
+Home delivery is available.
+Vegetarian and non-vegetarian food are available.
+Customers can contact the manager for complaints.

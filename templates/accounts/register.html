@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Register — AI Reputation Manager{% endblock %}
+
+{% block content %}
+<div class="card form-card">
+    <h1 style="margin-top:0;">Create your business owner account 🚀</h1>
+    <p class="helptext" style="margin-bottom:20px;">
+        Sign up to start managing customer reviews with AI.
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+    </form>
+
+    <p style="margin-top:20px; text-align:center;">
+        Already have an account?
+        <a href="{% url 'login' %}">Login</a>
+    </p>
+</div>
+{% endblock %}

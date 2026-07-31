@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}AI Reputation Manager — Manage Your Online Reputation{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Turn every review into a <span class="highlight">5-star</span> opportunity</h1>
+    <p class="lead">
+        AI Reputation Manager reads every customer review, detects spam,
+        analyzes sentiment, and drafts a professional reply — so you can
+        approve it in one click.
+    </p>
+
+    <div class="hero-actions">
+        {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn btn-primary">📊 Go to Dashboard</a>
+            <a href="{% url 'review_list' %}" class="btn btn-outline">⭐ View Reviews</a>
+        {% else %}
+            <a href="{% url 'register' %}" class="btn btn-primary">🚀 Get Started Free</a>
+            <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+        {% endif %}
+    </div>
+</section>
+
+<div class="grid feature-grid">
+    <div class="feature-card card-hover">
+        <span class="emoji">🤖</span>
+        <h3>AI-Drafted Replies</h3>
+        <p>Every review gets a polite, on-brand reply drafted automatically, grounded in your own business knowledge base.</p>
+    </div>
+
+    <div class="feature-card card-hover">
+        <span class="emoji">🚨</span>
+        <h3>Spam &amp; Duplicate Detection</h3>
+        <p>Fake reviews and duplicate submissions are flagged automatically so they never reach your public page.</p>
+    </div>
+
+    <div class="feature-card card-hover">
+        <span class="emoji">📊</span>
+        <h3>Sentiment Dashboard</h3>
+        <p>See at a glance how many reviews are positive, negative, pending, or spam with a live owner dashboard.</p>
+    </div>
+
+    <div class="feature-card card-hover">
+        <span class="emoji">🔗</span>
+        <h3>Shareable Customer Page</h3>
+        <p>Every business gets its own public link customers can use to leave a review — no login required for them.</p>
+    </div>
+</div>
+{% endblock %}
